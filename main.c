@@ -36,39 +36,37 @@ int main(int argc, char *argv[])
     // File was opened successfully
 
     // Scan first two lines
-    fscanf(file, "%d", &num_resources);
-    fscanf(file, "%d", &num_threads);
-
-    int available[num_resources];
-    int temp, counter = 0;
+    fscanf(file, "%d %d", &num_resources, &num_threads);
     
-    while(fscanf(file, "%d", &temp) == 1) {
-      available[counter++] = temp;
+    // Allocate space for the available resources
+    int available[num_resources];
+  
+    // Scan the available resources
+    for (int i=0; i<num_resources; i++) {
+      fscanf(file, "%d", &available[i]);
     }
 
-    int max[num_resources][num_threads];
+    // Allocate space for the max resources
+    int max[num_threads][num_resources];
 
-    for (int i=0; i<num_resources; i++) {
-      for (int j=0; j<num_threads; j++) {
+    // Scan the max resources
+    for (int i=0; i<num_threads; i++) {
+      for (int j=0; j<num_resources; j++) {
         fscanf(file, "%d", &max[i][j]);
       }
     }
 
+    // Allocate space for the allocated resources
+    int allocation[num_threads][num_resources];
 
-
-    for (int j = 0; j < counter; j++) {
-        printf("%d ", available[j]);
+    // Scan the allocated resources
+    for (int i=0; i<num_threads; i++) {
+      for (int j=0; j<num_resources; j++) {
+        fscanf(file, "%d", &allocation[i][j]);
+      }
     }
 
-    for (int i = 0; i < num_resources; i++) {
-        for (int j = 0; j < num_threads; j++) {
-            printf("%d ", max[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-
-
+  
 
     // Close the file
     fclose(file);
