@@ -3,20 +3,41 @@
 #include "vector.h"
 #include "banker.h"
 
-// Globals
-//int num_resources;
-//int num_threads;
-//int *available;
-//int **max;
-int **demand;
-
 /**
  * Check:
  * 1. Currently allocated resources don't exceed total number of resources
  * 2. Thread's don't exceed max demands for each resource type
 */
+int num_resources;
+int num_threads;
+int* available;
+int** max;
+int** allocation;
+int** need;
 
+void initMatrices(int num_resources, int num_threads) {
+  // Allocate space for the available resources
+    available = (int *) malloc(num_resources *sizeof(int));
 
+    // Allocate space for the max resources
+    max = (int **) malloc(num_threads * sizeof(int *));
+    for (int i=0; i< num_threads; i++) {
+      max[i] = (int *) malloc(num_resources *sizeof(int));
+    }
+
+    // Allocate space for the allocated resources
+    allocation = (int **) malloc(num_threads * sizeof(int *));
+    for (int i=0; i< num_threads; i++) {
+      allocation[i] = (int *) malloc(num_resources *sizeof(int));
+    }
+
+    // Allocate space for the needed resources
+    need = (int **) malloc(num_threads * sizeof(int *));
+    for (int i=0; i< num_threads; i++) {
+      need[i] = (int *) malloc(num_resources *sizeof(int));
+    }
+    
+}
 
 int main(int argc, char *argv[])
 {
@@ -27,10 +48,6 @@ int main(int argc, char *argv[])
   // File to open
   FILE *file;
   file = fopen(argv[1], "r");
-  
-  int num_resources;
-  int num_threads;
-
 
   if (file != NULL) {
     // File was opened successfully
@@ -38,16 +55,14 @@ int main(int argc, char *argv[])
     // Scan first two lines
     fscanf(file, "%d %d", &num_resources, &num_threads);
     
-    // Allocate space for the available resources
-    int available[num_resources];
+    initMatrices(num_resources, num_threads);
   
     // Scan the available resources
     for (int i=0; i<num_resources; i++) {
       fscanf(file, "%d", &available[i]);
     }
 
-    // Allocate space for the max resources
-    int max[num_threads][num_resources];
+    
 
     // Scan the max resources
     for (int i=0; i<num_threads; i++) {
@@ -56,8 +71,7 @@ int main(int argc, char *argv[])
       }
     }
 
-    // Allocate space for the allocated resources
-    int allocation[num_threads][num_resources];
+    
 
     // Scan the allocated resources
     for (int i=0; i<num_threads; i++) {
@@ -66,7 +80,18 @@ int main(int argc, char *argv[])
       }
     }
 
-  
+    if (getNeedMatrix() == 1) {
+      if (isSafe(available, allocation, need) == 1) {
+        printf("Everything worked\n");
+      } else {
+        printf("Nope\n");
+      }
+    }
+
+
+    
+
+    
 
     // Close the file
     fclose(file);
