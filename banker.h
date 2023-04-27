@@ -8,5 +8,8 @@ extern int *available;
 extern int **max;
 extern int **allocation;
 extern int **need;
+extern int *path;
+extern int *finish;
 
-int isSafe(int *availableMat, int **allocMat, int **needMat);
+int isSafe(int* available, int** allocation, int** need);
+void isSafeSchedule(int* work, int** allocation, int** need, int* finish, int* path);

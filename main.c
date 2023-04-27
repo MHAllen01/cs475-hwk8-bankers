@@ -14,27 +14,34 @@ int* available;
 int** max;
 int** allocation;
 int** need;
+int* path;
+int *finish;
 
 void initMatrices(int num_resources, int num_threads) {
-  // Allocate space for the available resources
-    available = (int *) malloc(num_resources *sizeof(int));
+    // Allocate space for the available resources
+    available = (int *) malloc(num_resources * sizeof(int));
+
+    // Allocate space for the paths of successful schedules
+    path = (int *) malloc(num_threads * sizeof(int));
+
+    finish = (int *) malloc(num_threads * sizeof(int));
 
     // Allocate space for the max resources
     max = (int **) malloc(num_threads * sizeof(int *));
     for (int i=0; i< num_threads; i++) {
-      max[i] = (int *) malloc(num_resources *sizeof(int));
+      max[i] = (int *) malloc(num_resources * sizeof(int));
     }
 
     // Allocate space for the allocated resources
     allocation = (int **) malloc(num_threads * sizeof(int *));
     for (int i=0; i< num_threads; i++) {
-      allocation[i] = (int *) malloc(num_resources *sizeof(int));
+      allocation[i] = (int *) malloc(num_resources * sizeof(int));
     }
 
     // Allocate space for the needed resources
     need = (int **) malloc(num_threads * sizeof(int *));
     for (int i=0; i< num_threads; i++) {
-      need[i] = (int *) malloc(num_resources *sizeof(int));
+      need[i] = (int *) malloc(num_resources * sizeof(int));
     }
     
 }
@@ -80,23 +87,28 @@ int main(int argc, char *argv[])
       }
     }
 
-    if (getNeedMatrix() == 1) {
-      if (isSafe(available, allocation, need) == 1) {
-        printf("Everything worked\n");
+    /*
+        Calculate and store the need matrix globally
+        If the getNeedMatrix function passes the sanity checks, run the isSafe function
+          if it doesn't, don't do anything. Report in that function and exit
+    */
+    if (getNeedMatrix(max, allocation) == 1) {
+
+      // Need matrix passed sanity checks... run isSafe()
+      isSafeSchedule(available, allocation, need, finish, path);
       } else {
-        printf("Nope\n");
+        printf("Integrity test failed: allocated resources exceed total resources\n");
       }
-    }
 
 
-    
+
 
     
 
     // Close the file
     fclose(file);
   } else {
-    printf("whoops\n");
+    printf("Can't find file %s\n", argv[1]);
   }
   return 0;
 }
