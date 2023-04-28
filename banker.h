@@ -9,7 +9,6 @@ extern int **max;
 extern int **allocation;
 extern int **need;
 extern int *path;
-extern int *finish;
 
-int isSafe(int* available, int** allocation, int** need);
-void isSafeSchedule(int* work, int** allocation, int** need, int* finish, int* path);
+int isSafe(int* available, int** allocated, int** need, int* finish, int* work, int* path, int thread_num);
+void printPath(int* path, int length);
