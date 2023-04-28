@@ -5,7 +5,6 @@
 
 // TODO - Define vector and matrix operations
 
-
 /**
  * Calculates the needed resources by subtracting the allocated resources from max resources
  * 
